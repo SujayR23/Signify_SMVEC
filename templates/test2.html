@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+  <link href="/static/css/main.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/g/filesaver.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver"></script>
+
+
+    <style>
+      .containerx {
+        max-width: 1000px; /* Change this value to 700px */
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #df956d;
+    }
+
+    .quiz {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .question {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .options {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: 1px solid #df956d;
+        border-radius: 5px;
+        background-color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+    button:hover {
+        background-color: #df956d;
+        color: #fff;
+    }
+
+    .result {
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+    .score {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .report-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .chart-container {
+        width: 250px;
+        height: 250px;
+        margin: 10px;
+    }
+
+    .charts-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .report-container .row {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap; 
+    }
+
+    .report-container .col-md-6 {
+        width: 48%;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #resultChart,
+    #pieChart {
+        width: 100%;
+        height: 100%;
+    }
+    img { 
+        width: 200px; 
+        height: 200px; 
+    }
+    body{
+        background: url("/static/img/background.jpg") center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-y: scroll;
+    }
+
+    footer{
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    footer div{
+        background-color: white;;
+    }
+    </style>
+   
+</head>
+<body>
+    <header class="masthead">
+      <div class="container px-4 px-lg-5 h-100">
+          <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+              <div class="row justify-content-center">
+                  <div class="col-lg-8">
+                      <div class="containerx">
+                        <div class="container" id="question-container">
+                            <!-- Question and Input Section -->
+                            <div id="image-container"></div>
+                            <div id="input-container">
+                              <label for="userInput">Enter the correct spelling:</label>
+                              <input type="text" id="userInput">
+                              <button onclick="checkAnswer()">Submit</button>
+                              <p>Score: <span id="score">0</span></p>
+                            </div>
+                          </div>
+                          <div class="report-container">
+                            <div class="charts-row">
+                                <div class="chart-container">
+                                    <canvas id="resultChart" width="250" height="250"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="pieChart" width="250" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="endTestButton" onclick="endTest()">End Test</button>
+                        <button id="downloadButton" onclick="downloadReport()">Download Report</button>
+                        <script>
+                          const images = [
+                            { filename: 'apple.jpg', word: 'apple' },
+                            { filename: 'banana.jpg', word: 'banana' },
+                            { filename: 'orange.jpg', word: 'orange' },
+                            // Add more image-word pairs here
+                          ];
+                      
+                          const imagePath = '/static/img/';
+                      
+                          let currentImageIndex = 0;
+                          let score = 0;
+                          let totalAttempts = 0;
+                          let correctAttempts = 0;
+                          let testEnded = false;
+                      
+                          function displayImage() {
+                            const imageContainer = document.getElementById('image-container');
+                            imageContainer.innerHTML = `<img src="${imagePath}${images[currentImageIndex].filename}" alt="Random Image">`;
+                          }
+                      
+                          function checkAnswer() {
+                            if (testEnded) { return; }
+                            const userInput = document.getElementById('userInput').value.toLowerCase();
+                            const correctWord = images[currentImageIndex].word.toLowerCase();
+                            totalAttempts++;
+                            if (userInput === correctWord) {
+                              score++;
+                              correctAttempts++;
+                              document.getElementById('score').innerText = score;
+                            }
+                            currentImageIndex = (currentImageIndex + 1) % images.length;
+                            displayImage();
+                            document.getElementById('userInput').value = '';
+                            if (totalAttempts === images.length) { endTest(); }
+                          }
+                      
+                          
+                          function displayReport() {
+                            const container = document.getElementById('report-container');
+                            container.classList.remove('d-none');
+                            const totalScoreElement = document.getElementById('totalScore');
+                            const totalAttemptsElement = document.getElementById('totalAttempts');
+                            const correctAttemptsElement = document.getElementById('correctAttempts');
+                      
+                            totalScoreElement.innerText = score;
+                            totalAttemptsElement.innerText = totalAttempts;
+                            correctAttemptsElement.innerText = correctAttempts;
+                      
+                            updateChart();
+                            displayPieChart();
+                          }
+                      
+                          function displayPieChart() {
+                            const pieData = [correctAttempts, totalAttempts - correctAttempts];
+                            const pieLabels = ['Correct', 'Wrong'];
+                            const ctx = document.getElementById('pieChart').getContext('2d');
+                            new Chart(ctx, {
+                              type: 'pie',
+                              data: {
+                                labels: pieLabels,
+                                datasets: [
+                                  {
+                                    data: pieData,
+                                    backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                                    borderWidth: 1,
+                                  },
+                                ],
+                              },
+                              options: { scales: { y: { beginAtZero: true } } },
+                            });
+                          }
+                      
+                          function updateChart() {
+                            const ctx = document.getElementById('resultChart').getContext('2d');
+                            const resultChart = new Chart(ctx, {
+                              type: 'bar',
+                              data: {
+                                labels: ['Correct', 'Wrong'],
+                                datasets: [
+                                  {
+                                    label: 'Number of Attempts',
+                                    data: [correctAttempts, totalAttempts - correctAttempts],
+                                    backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                                    borderWidth: 1,
+                                  },
+                                ],
+                              },
+                              options: { scales: { y: { beginAtZero: true } } },
+                            });
+                          }
+                      
+                          // Display the first image when the page loads
+                          displayImage();
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <footer>
+        <div class="small text-center text-muted">Copyright &copy; 2023 - Team Arivagam</div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+    <script src="/static/js/scripts.js"></script>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    <script>
+        // Function to display the report
+        function displayReport() {
+            const pieData = [correctAttempts, totalAttempts - correctAttempts];
+            const pieLabels = ['Correct', 'Wrong'];
+    
+            const ctxResult = document.getElementById('resultChart').getContext('2d');
+            new Chart(ctxResult, {
+                type: 'bar',
+                data: {
+                    labels: ['Correct', 'Wrong'],
+                    datasets: [
+                        {
+                            label: 'Number of Attempts',
+                            data: [correctAttempts, totalAttempts - correctAttempts],
+                            backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+                            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: { scales: { y: { beginAtZero: true } } },
+            });
+    
+            const ctxPie = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: pieLabels,
+                    datasets: [
+                        {
+                            data: pieData,
+                            backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+                            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: { scales: { y: { beginAtZero: true } } },
+            });
+        }
+    </script>
+    <script>
+        function endTest() {
+            const questionContainer = document.getElementById("question-container");
+            const reportContainer = document.querySelector(".report-container");
+            const endTestButton = document.getElementById("endTestButton");
+            const downloadButton = document.getElementById("downloadButton");
+    
+            // Hide the question container and show the report container
+            questionContainer.style.display = "none";
+            reportContainer.style.display = "block";
+    
+            // Disable buttons
+            endTestButton.setAttribute("disabled", "true");
+            downloadButton.removeAttribute("disabled");
+    
+            // Display the report
+            displayReport();
+        }
+    </script>
+    <script>
+
+    function downloadReport() {
+        // Create a CSV content
+        const csvContent = [
+            ['Total Attempts', 'Correct Attempts', 'Wrong Attempts'],
+            [totalAttempts, correctAttempts, totalAttempts - correctAttempts]
+        ].map(row => row.join(',')).join('\n');
+
+        // Create a Blob from the CSV content
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+
+        // Save the Blob as a file
+        saveAs(blob, 'report.csv');
+    }
+</script>
+
+    </script>
+
+      </script>
+      
+</body>
+</html>

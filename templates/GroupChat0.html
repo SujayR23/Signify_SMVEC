@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Multi-User Chat</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+    <style>
+      .chatroom {
+        background-image: url("/static/img/background.jpg");
+        background-color: black;
+        /* border: 3rem black solid; */
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        /* flex-wrap: wrap; */
+      }
+
+      .jumbotron {
+        background-color: rgba(255, 125, 92, 0.25);
+        backdrop-filter: blur(10px);
+      }
+
+      .chat-container {
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+      }
+      .message-container {
+        max-height: 600px;
+        overflow-y: auto;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+      }
+      .user-message {
+        background-color: #ffefd5;
+        border-color: #dc9663;
+      }
+      .other-message {
+        background-color: #f5f5dc;
+        border-color: #a76666;
+      }
+      .message-content {
+        padding: 5px 10px;
+      }
+
+      .small input {
+        background-color: rgba(222, 109, 81, 0.2);
+        backdrop-filter: blur(5px);
+        color: white;
+        border: none;
+      }
+
+      .getting input:focus {
+        color: white;
+      }
+
+      .getting input.has-value {
+        background-color: rgba(222, 109, 81, 0.2);
+        backdrop-filter: blur(5px);
+      }
+
+      .getting input:valid {
+        background-color: rgba(222, 109, 81, 0.2);
+        backdrop-filter: blur(5px);
+      }
+
+      .getting input:invalid {
+        background-color: rgba(222, 109, 81, 0.2);
+        backdrop-filter: blur(5px);
+      }
+    </style>
+  </head>
+  <body class="chatroom">
+    <br />
+    <br />
+    <br />
+
+    <div
+      class="chat-container"
+      style="
+        background-color: transparent;
+        border: rgba(255, 225, 225, 0.6) solid 2px;
+        height: 41.2rem;
+      "
+    >
+      <div class="jumbotron">
+        <h1
+          class="display-4"
+          style="color: rgba(255, 255, 255, 0.8); text-align: center"
+        >
+          Chat Room
+        </h1>
+      </div>
+      <div id="room-selection">
+        <div
+          class="card"
+          style="
+            background-color: rgba(255, 125, 92, 0.25);
+            backdrop-filter: blur(10px);
+          "
+        >
+          <div
+            class="card-header"
+            style="border-bottom: rgba(255, 225, 225, 0.6) solid 1px"
+          >
+            <h2 style="color: rgba(255, 255, 255, 0.7); text-align: center">
+              Create or Join a Room
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group getting">
+              <label for="room-id" style="color: rgba(255, 255, 255, 0.7)"
+                >Room ID:</label
+              >
+              <input
+                type="text"
+                id="room-id"
+                class="form-control"
+                style="
+                  background-color: transparent;
+                  backdrop-filter: blur(2px);
+                  color: white;
+                "
+              />
+            </div>
+            <div class="form-group getting">
+              <label for="language" style="color: rgba(255, 255, 255, 0.7)"
+                >Preferred Language:</label
+              >
+              <input
+                type="text"
+                id="language"
+                class="form-control"
+                style="
+                  background-color: transparent;
+                  backdrop-filter: blur(2px);
+                  color: white;
+                "
+              />
+            </div>
+            <div class="form-group getting">
+              <label for="user-name" style="color: rgba(255, 255, 255, 0.7)"
+                >Your Name:</label
+              >
+              <input
+                type="text"
+                id="user-name"
+                class="form-control"
+                style="
+                  background-color: transparent;
+                  backdrop-filter: blur(2px);
+                  color: white;
+                "
+              />
+            </div>
+            <button onclick="joinRoom()" class="btn btn-primary">
+              Join Room
+            </button>
+            <button onclick="createRoom()" class="btn btn-success">
+              Apply Translation
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="thanks-message" style="display: none">
+        <div class="jumbotron">
+          <h1 class="display-4">Thanks for the time!</h1>
+          <p class="lead">
+            You have left the room. Feel free to join or create another room.
+          </p>
+          <button onclick="backToRoomSelection()" class="btn btn-primary">
+            Back to Room Selection
+          </button>
+        </div>
+      </div>
+
+      <div id="chat-room" style="display: none">
+        <div class="card mt-4">
+          <div class="card-header">
+            <h2>
+              Room: <span id="current-room"></span> -
+              <span id="user-name-display"></span>
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="message-container" id="messages"></div>
+            <div class="input-group mt-3">
+              <input
+                type="text"
+                id="message"
+                class="form-control"
+                placeholder="Type your message..."
+              />
+              <div class="input-group-append">
+                <button onclick="sendMessage()" class="btn btn-primary">
+                  Send
+                </button>
+                <button onclick="leaveRoom()" class="btn btn-danger ml-2">
+                  Leave Room
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var socket;
+      var currentRoom = null;
+
+      function joinRoom() {
+        var roomId = $("#room-id").val();
+        var language = $("#language").val();
+        var userName = $("#user-name").val(); // Get user's name
+        if (roomId && userName) {
+          socket.emit("join", {
+            room: roomId,
+            language: language,
+            user: userName,
+          }); // Send user's name
+          currentRoom = roomId;
+          $("#current-room").text(roomId);
+          $("#user-name-display").text(userName); // Display user's name
+          $("#room-selection").hide();
+          $("#chat-room").show();
+          function joinRoom() {
+            socket.emit("join", {
+              room: roomId,
+              language: language,
+              user: userName,
+            });
+          }
+        }
+      }
+      function leaveRoom() {
+        if (currentRoom) {
+          socket.emit("leave", { room: currentRoom });
+          currentRoom = null;
+          $("#chat-room").hide();
+          $("#thanks-message").show();
+          $("#room-selection").show();
+        }
+      }
+
+      function backToRoomSelection() {
+        $("#thanks-message").hide();
+        $("#room-selection").show();
+      }
+
+      function createRoom() {
+        var userName = $("#user-name").val(); // Get user's name
+        if (userName) {
+          socket.emit("create", {
+            room: socket.id,
+            language: $("#language").val(),
+            user: userName,
+          }); // Send user's name
+        }
+      }
+
+      function sendMessage() {
+        var message = $("#message").val();
+        if (message) {
+          socket.emit("message", {
+            room: currentRoom,
+            message: message,
+            targetLanguage: $("#language").val(),
+          });
+          $("#message").val("");
+        }
+      }
+
+      $(document).ready(function () {
+        socket = io.connect("http://" + document.domain + ":" + location.port);
+
+        socket.on("connect", function () {
+          console.log("Connected to server");
+        });
+
+        socket.on("system_message", function (data) {
+          var message = data.message;
+          if (!messageAlreadyExists(message)) {
+            $("#messages").append(
+              '<div class="message-container"><em>' + message + "</em></div>"
+            );
+          }
+        });
+
+        socket.on("user_message", function (data) {
+          var userName = data.user;
+          var translatedMessage = data.message;
+          var isUserMessage = userName === $("#user-name").val();
+
+          var messageClass = isUserMessage ? "user-message" : "other-message";
+          var messageContent =
+            '<div class="message-content">' + translatedMessage + "</div>";
+          var messageSender = isUserMessage ? "You" : userName;
+
+          var messageHTML =
+            '<div class="message-container ' +
+            messageClass +
+            '"><strong>' +
+            messageSender +
+            ":</strong>" +
+            messageContent +
+            "</div>";
+
+          $("#messages").append(messageHTML);
+
+          // Scroll to the bottom of the message container
+          var messagesContainer = document.getElementById("messages");
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+
+        function messageAlreadyExists(message) {
+          return (
+            $("#messages").find('.message-content:contains("' + message + '")')
+              .length > 0
+          );
+        }
+      });
+    </script>
+  </body>
+</html>

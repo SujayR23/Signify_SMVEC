@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spell Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+  <link href="/static/css/main.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/g/filesaver.js"></script>
+
+    <style>
+      body{
+            background: url("/static/img/background.jpg") center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow-y: scroll;
+        }
+
+      footer{
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+      }
+
+      footer div{
+          background-color: white;;
+      }
+
+      .containerx {
+        max-width: 1000px; /* Change this value to 700px */
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #df956d;
+    }
+
+    .quiz {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .question {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .options {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: 1px solid #df956d;
+        border-radius: 5px;
+        background-color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+    button:hover {
+        background-color: #df956d;
+        color: #fff;
+    }
+
+    .result {
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+    .score {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .report-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .chart-container {
+        width: 250px;
+        height: 250px;
+        margin: 10px;
+    }
+
+    .charts-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .report-container .row {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap; 
+    }
+
+    .report-container .col-md-6 {
+        width: 48%;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #resultChart,
+    #pieChart {
+        width: 100%;
+        height: 100%;
+    }
+
+   
+    </style>
+   
+</head>
+<body>    
+    <header class="masthead">
+      <div class="container px-4 px-lg-5 h-100">
+          <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+              <div class="row justify-content-center">
+                  <div class="col-lg-8">
+                      <div class="containerx">
+                          <h1>  Dyslexia Word Test</h1>
+                          <div class="quiz">
+                              <p class="question"></p>
+                              <div class="options">
+                                  <button onclick="checkAnswer(0)"></button>
+                                  <button onclick="checkAnswer(1)"></button>
+                                  <button onclick="checkAnswer(2)"></button>
+                              </div>
+                              <p class="result"></p>
+                          </div>
+                          <div class="report-container">
+                            <div class="charts-row">
+                                <div class="chart-container">
+                                    <canvas id="resultChart" width="250" height="250"></canvas>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="pieChart" width="250" height="250"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="endTestButton" onclick="endTest()">End Test</button>
+                        <button id="downloadButton" onclick="downloadReport()">Download Report</button>
+                        
+                            
+                              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                              <script>
+                                const confusingWords = [
+                                  {
+                                    question: "He rang the ______ .",
+                                    options: ["bell", "dell", "bel"],
+                                    answer: "bell"
+                                  },
+                                  {
+                                    question: "She is ____ .",
+                                    options: ["beautiful", "deautiful", "deutiful"],
+                                    answer: "beautiful"
+                                  },
+                                  {
+                                    question: "I ____ my bike to school.",
+                                    options: ["rode", "road", "rowed"],
+                                    answer: "rode"
+                                  }
+                                ];
+                            
+                                let currentQuestion = 0;
+                                let score = 0;
+
+                            
+                                function displayQuestion() {
+                                  const questionDiv = document.querySelector(".question");
+                                  const optionsDiv = document.querySelector(".options");
+                                  const resultP = document.querySelector(".result");
+                                  const scoreSpan = document.getElementById("score");
+                                  const totalQuestionsSpan = document.getElementById("totalQuestions");
+                            
+                                  if (currentQuestion >= confusingWords.length) {
+                                    questionDiv.textContent = "Quiz Completed!";
+                                    optionsDiv.innerHTML = "";
+                                    resultP.textContent = `Your score: ${score}/${confusingWords.length}`;
+                                    displayReport();
+                                  } else {
+                                    const question = confusingWords[currentQuestion].question;
+                                    const options = confusingWords[currentQuestion].options;
+                                    const correctAnswer = confusingWords[currentQuestion].answer;
+                            
+                                    questionDiv.textContent = question;
+                            
+                                    optionsDiv.innerHTML = options
+                                      .map((option, index) => `<button onclick="checkAnswer(${index})">${option}</button>`)
+                                      .join("");
+                            
+                                    resultP.textContent = "";
+                                    scoreSpan.textContent = score;
+                                    totalQuestionsSpan.textContent = confusingWords.length;
+                                  }
+                                }
+                                
+                                function checkAnswer(selectedAnswerIndex) {
+                                  const correctAnswer = confusingWords[currentQuestion].answer;
+                                  const resultP = document.querySelector(".result");
+                            
+                                  if (selectedAnswerIndex === confusingWords[currentQuestion].options.indexOf(correctAnswer)) {
+                                    score++;
+                                    resultP.textContent = "Correct!";
+                                    resultP.style.color = "green";
+                                  } else {
+                                    resultP.textContent = "Incorrect!";
+                                    resultP.style.color = "red";
+                                  }
+                            
+                                  currentQuestion++;
+                                  setTimeout(() => {
+                                    displayQuestion();
+                                  }, 1000);
+                                }
+                            
+                                function displayReport() {
+                                  const reportContainer = document.querySelector(".report-container");
+                                  reportContainer.style.display = "block";
+                            
+                                  const ctx = document.getElementById("resultChart").getContext("2d");
+                                  const resultChart = new Chart(ctx, {
+                                    type: "bar",
+                                    data: {
+                                      labels: ["Correct", "Incorrect"],
+                                      datasets: [
+                                        {
+                                          label: "Number of Attempts",
+                                          data: [score, confusingWords.length - score],
+                                          backgroundColor: ["rgba(75, 192, 192, 0.7)", "rgba(255, 99, 132, 0.7)"],
+                                          borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+                                          borderWidth: 1,
+                                        },
+                                      ],
+                                    },
+                                    options: {
+                                      scales: {
+                                        y: {
+                                          beginAtZero: true,
+                                        },
+                                      },
+                                    },
+                                  });
+                            
+                                  const pieCtx = document.getElementById("pieChart").getContext("2d");
+                                  const pieData = [score, confusingWords.length - score];
+                                  const pieLabels = ["Correct", "Incorrect"];
+                                  const pieChart = new Chart(pieCtx, {
+                                    type: "pie",
+                                    data: {
+                                      labels: pieLabels,
+                                      datasets: [
+                                        {
+                                          data: pieData,
+                                          backgroundColor: ["rgba(75, 192, 192, 0.7)", "rgba(255, 99, 132, 0.7)"],
+                                          borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+                                          borderWidth: 1,
+                                        },
+                                      ],
+                                    },
+                                  });
+                            
+                                  document.getElementById("totalScore").textContent = score;
+                                  document.getElementById("totalQuestionsReport").textContent = confusingWords.length;
+                                }
+                            
+                                // Display the first question when the page loads
+                                displayQuestion();
+                              </script>
+                        </div>
+                    </div>
+                </div>                
+                </div>
+            </div>
+        </div>
+    </header>
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <footer>
+            <div class="small text-center text-muted">Copyright &copy; 2023 - Team Arivagam</div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+    <script src="/static/js/scripts.js"></script>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    <script>
+      function downloadReport() {
+        const resultCanvas = document.getElementById("resultChart");
+        const pieCanvas = document.getElementById("pieChart");
+
+        const resultImageURL = resultCanvas.toDataURL("image/png");
+        const pieImageURL = pieCanvas.toDataURL("image/png");
+
+        const zip = new JSZip();
+
+        zip.folder("report").file("result.png", resultImageURL.split("base64,")[1], { base64: true });
+        zip.folder("report").file("pie.png", pieImageURL.split("base64,")[1], { base64: true });
+
+        zip.generateAsync({ type: "blob" }).then(function (content) {
+            saveAs(content, "report.zip");
+        });
+    }
+
+      </script>
+      <script>
+        function endTest() {
+    const questionDiv = document.querySelector(".question");
+    const optionsDiv = document.querySelector(".options");
+    const resultP = document.querySelector(".result");
+    const endTestButton = document.getElementById("endTestButton");
+    const downloadButton = document.getElementById("downloadButton");
+
+    // Clear question, options, and result
+    questionDiv.textContent = "Test Ended";
+    optionsDiv.innerHTML = "";
+    resultP.textContent = "";
+
+    // Disable buttons
+    endTestButton.setAttribute("disabled", "true");
+    downloadButton.setAttribute("disabled", "true");
+
+    // Display the report for the questions answered so far
+    displayReport();
+}
+
+      </script>
+      
+</body>
+</html>

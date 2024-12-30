@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sudoku Solver</title>
+    <link href="/static/css/main.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Merriweather:400,700"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: url("/static/img/background.jpg") center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-y: scroll;
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      table {
+        border-collapse: collapse;
+      }
+      td {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        font-size: 18px;
+        border: 1px solid #ffffff;
+        cursor: pointer;
+        color: white;
+      }
+      .bold-top {
+        border-top: 2px solid #ffffff;
+      }
+      .bold-left {
+        border-left: 2px solid #ffffff;
+      }
+      .bold-bottom {
+        border-bottom: 2px solid #ffffff;
+      }
+      .bold-right {
+        border-right: 2px solid #ffffff;
+      }
+      .col-lg-8 {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      #bod-div {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(222, 109, 81, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        border: rgba(255, 255, 255, 0.4) solid 1px;
+        flex-wrap: wrap;
+        width: 45%;
+        height: auto;
+        margin: 3rem 3rem 3rem 3rem;
+        padding: 3rem 5rem 5rem 5rem;
+      }
+      footer div {
+        background-color: white;
+      }
+    </style>
+    <script>
+      // Function to handle cell clicks and allow input
+      function handleClick(cell) {
+        var input = prompt("Enter a number (1-9):");
+        if (input !== null) {
+          input = parseInt(input);
+          if (!isNaN(input) && input >= 1 && input <= 9) {
+            cell.textContent = input;
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="bod-div">
+      <h1
+        style="
+          color: white;
+          font-size: 2rem;
+          font-weight: 700;
+          margin-bottom: 2rem;
+        "
+      >
+        Find the solution
+      </h1>
+      <table style="font-size: 35px; margin: 0 auto; border-collapse: collapse">
+        <tbody>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+          <tr>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-left" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+            <td class="bold-top bold-right" onclick="handleClick(this)"></td>
+            <td class="bold-top" onclick="handleClick(this)"></td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <button
+        class="btn btn-primary"
+        style="margin: 0.5rem"
+        onclick="updateGridData()"
+      >
+        Submit
+      </button>
+      <a href="findsolution"
+        ><button class="btn btn-primary" style="margin: 0.5rem">
+          Get solution
+        </button></a
+      >
+    </div>
+    <script>
+      function updateGridData() {
+        var data = [];
+        var cells = document.querySelectorAll("td"); // Get all grid cells
+
+        cells.forEach(function (cell) {
+          data.push(cell.textContent);
+        });
+
+        // Send the data to the Flask endpoint using AJAX
+        var formData = new FormData();
+        formData.append("grid_data", data);
+
+        fetch("/find", {
+          method: "POST",
+          body: formData,
+        });
+      }
+    </script>
+    <footer>
+      <div class="small text-center text-muted">
+        Copyright &copy; 2023 - Team Arivagam
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+    <script src="/static/js/scripts.js"></script>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+  </body>
+</html>

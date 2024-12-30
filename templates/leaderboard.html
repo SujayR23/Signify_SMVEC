@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url("/static/img/background.jpg"); /* Background image URL */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        flex-wrap: wrap;
+        margin-top: 4rem;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: rgba(222, 109, 81, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        border: rgba(255, 255, 255, 0.4) solid 1px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.75);
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      li {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      li:hover {
+        background-color: #eaeaea;
+      }
+
+      .leaderboard {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: transparent;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .icon {
+        color: rgba(255, 255, 255, 0.3);
+        margin-right: 10px;
+      }
+
+      #connect_bt {
+        background-color: brown;
+        color: white; 
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+      }
+      #connect_bt:hover {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Leaderboard</h2>
+      <ul>
+        
+        {% for key,value in leaderboard.items() %}
+        <li
+          style="
+            background-color: rgba(222, 109, 81, 0.1);
+            backdrop-filter: blur(10px);
+          "
+        >
+          <div class="leaderboard">
+            <div>
+              <span class="icon"><i class="fas fa-name"></i></span>
+              <strong>{{ key }}</strong>
+            </div>
+            <div>
+              <span class="icon"><i class="fas fa-rank"></i></span>
+              <strong>{{ value }}</strong>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>

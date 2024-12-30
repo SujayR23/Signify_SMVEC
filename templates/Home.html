@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Signify</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
+      rel="stylesheet"
+    />
+    <link href="/static/css/styles.css" rel="stylesheet" />
+    <style>
+      .suggested-videos-heading {
+        color: #ff5500;
+      }
+
+      #todoContainer {
+        overflow-y: hidden;
+        white-space: nowrap;
+      }
+
+      .todo-item {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        margin-right: 2%;
+        width: 48%;
+        display: inline-block;
+        vertical-align: top;
+        color: black;
+        background-color: rgb(105, 86, 86);
+      }
+
+      .todo-item:nth-child(2n) {
+        margin-right: 0;
+      }
+
+      .todo-item p {
+        margin-bottom: 5px;
+      }
+
+      .todo-item button {
+        margin-top: auto;
+      }
+
+      .videos-container {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        align-items: flex-start;
+        margin-top: 20px;
+      }
+
+      .video-item-container {
+        width: 740px;
+        margin-right: 10px;
+        text-align: center;
+      }
+
+      .video-item img {
+        width: 80%;
+        height: auto;
+      }
+
+      .videos-container button {
+        display: block;
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #ff5500;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .videos-container button:hover {
+        background-color: #ff5500;
+      }
+
+      .masthead h1,
+      .masthead p {
+        color: white;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      .suggested-videos-heading {
+        text-align: center;
+        margin-bottom: 60x;
+      }
+    </style>
+  </head>
+  <body id="page-top">
+    <nav
+      class="navbar navbar-expand-lg navbar-light fixed-top py-3"
+      id="mainNav"
+    >
+      <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="#" data-translate="navbarTitle"
+          >Signify</a
+        >
+        <button
+          class="navbar-toggler navbar-toggler-right"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="https://prithiknataraj.github.io/Schollarship/"
+                data-translate="scholarship"
+                >Scholarship</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="mentor" data-translate="mentor"
+                >Mentor</a
+              >
+            </li>
+            <!-- <li class="nav-item">
+              <a
+                class="nav-link"
+                href="https://c804-2401-4900-67b7-e02b-b9fb-da6f-c93-8b2a.ngrok-free.app"
+                data-translate="document"
+                >Document</a
+              >
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="live" data-translate="Youtube"
+                >Live SL Translation</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="ChatBot"
+                data-translate="navbarGroupchat"
+                >Nanba</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="linkyt"
+                data-translate="navbarGroupchat"
+                >YouTube Link</a
+              >
+            </li>
+            <!-- <li class="nav-item">
+              <a
+                class="nav-link"
+                href="GroupChat"
+                data-translate="navbarGroupchat"
+                >Groupchat</a
+              >
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="MeetingIn" data-translate="navbarMeet"
+                >Meet</a
+              >
+            </li>
+            <!-- <li class="nav-item"><a class="nav-link" href="holistic" data-translate="navbarMeet">Holistic Development</a></li> -->
+            <!-- <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                data-translate="navbarLanguage"
+                >Language</a
+              >
+              <ul class="dropdown-menu">
+                <li>
+                  <button onclick="setLanguage('en')" class="dropdown-item">
+                    English
+                  </button>
+                </li>
+                <li>
+                  <button onclick="setLanguage('hi')" class="dropdown-item">
+                    हिंदी
+                  </button>
+                </li>
+                <li>
+                  <button onclick="setLanguage('ta')" class="dropdown-item">
+                    தமிழ்
+                  </button>
+                </li>
+              </ul>
+            </li> -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                data-translate="navbarProfile"
+                >Profile</a
+              >
+              <ul class="dropdown-menu">
+                <li>
+                  <button onclick="editpage()" class="dropdown-item">
+                    Edit-Profile
+                  </button>
+                </li>
+                <li>
+                  <button onclick="logout()" class="dropdown-item">
+                    Sign Out
+                  </button>
+                </li>
+              </ul>
+            </li>
+            <!-- <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                data-translate="navbarProfile"
+                >Test</a
+              > -->
+            <!-- <ul class="dropdown-menu">
+                <li>
+                  <button onclick="location.href='spelltest'" class="dropdown-item">
+                    Spell Test
+                  </button>
+                </li>
+                <li>
+                  <button onclick="location.href='readtest'" class="dropdown-item">
+                    Read Test
+                  </button>
+                </li>
+                <li>
+                  <button onclick="location.href='pre'" class="dropdown-item">
+                    Sudoku
+                  </button>
+                </li>
+              </ul> -->
+            <!-- </li> -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <header class="masthead">
+      <div class="container px-4 px-lg-5 h-100">
+        <div
+          class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center"
+        >
+          <div class="container mt-9">
+            <div class="row">
+              <div class="col-md-12">
+                <h1>Welcome to Signify</h1>
+                <p style="color: rgba(255, 255, 255, 0.8)">
+                  Welcome back! It's a pleasure to have you here. We are here to
+                  assist you with your to-do list and support your journey of
+                  learning and growth. Together, we'll achieve your goals and
+                  make progress in various aspects of life. Let's collaborate
+                  and make the most of this opportunity to create a bright
+                  future!
+                </p>
+                <form id="todoForm">
+                  <div class="input-group mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="todoInput"
+                      placeholder="Add a to-do item..."
+                    />
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="todoDateTime"
+                    />
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="todoTimeFrame"
+                      placeholder="Time frame in hours"
+                    />
+                    <button class="btn btn-primary" type="submit">Add</button>
+                  </div>
+                </form>
+
+                <div id="todoContainer">
+                  <!-- To-do items will be added dynamically here -->
+                  <div id="todoList"></div>
+                </div>
+                <div class="container mt-3">
+                  <div class="row justify-content-center">
+                    <div class="col-md-6">
+                      <form action="/home" method="POST">
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="search-input"
+                            name="ytsearch"
+                            placeholder="Type for the concept you want to learn today..."
+                          />
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="search-input"
+                            name="ytplay"
+                            placeholder="GO for a course search"
+                          />
+                          <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                              Learn
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Suggested Videos -->
+    <div class="container px-4 px-lg-5">
+      <br /><br />
+      <h3 class="suggested-videos-heading">SUGGESTED LESSONS</h3>
+      <div class="videos-container">
+        {% if age=='6' or age=='7' or age == '5' %}
+        <div class="video-item-container">
+          <img src="/static/img/1.png" alt="" />
+          <button onclick="sendText('button1')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/2.png" alt="" />
+          <button onclick="sendText('button2')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/3.png" alt="" />
+          <button onclick="sendText('button3')">Watch</button>
+        </div>
+        {% elif age=='8' or age=='9' or age == '10' %}
+        <div class="video-item-container">
+          <img src="/static/img/4.png" alt="" />
+          <button onclick="sendText('button4')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/5.png" alt="" />
+          <button onclick="sendText('button5')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/6.png" alt="" />
+          <button onclick="sendText('button6')">Watch</button>
+        </div>
+        {% elif age=='11' or age=='12' or age == '13' %}
+        <div class="video-item-container">
+          <img src="/static/img/7.png" alt="" />
+          <button onclick="sendText('button7')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/8.png" alt="" />
+          <button onclick="sendText('button8')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/9.png" alt="" />
+          <button onclick="sendText('button9')">Watch</button>
+        </div>
+        {% elif age=='14' or age=='15' or age == '16' %}
+        <div class="video-item-container">
+          <img src="/static/img/10.png" alt="" />
+          <button onclick="sendText('button10')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/11.png" alt="" />
+          <button onclick="sendText('button11')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/12.png" alt="" />
+          <button onclick="sendText('button12')">Watch</button>
+        </div>
+        {% else %}
+        <div class="video-item-container">
+          <img src="/static/img/13.png" alt="" />
+          <button onclick="sendText('button13')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/15.png" alt="" />
+          <button onclick="sendText('button14')">Watch</button>
+        </div>
+        <div class="video-item-container">
+          <img src="/static/img/16.png" alt="" />
+          <button onclick="sendText('button15')">Watch</button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <style>
+      df-messenger {
+        --df-messenger-bot-message: #46332b;
+        --df-messenger-button-titlebar-color: #e45116;
+        --df-messenger-chat-background-color: #fafafa;
+        --df-messenger-font-color: white;
+        --df-messenger-send-icon: #46332b;
+        --df-messenger-user-message: #7b665d;
+      }
+    </style>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      intent="WELCOME"
+      chat-title="Snehi"
+      agent-id="35d74b1f-99e5-4ac7-9ebe-9835937928e2"
+      language-code="en"
+    ></df-messenger>
+
+    <!-- Footer -->
+    <footer class="bg-light py-5">
+      <div class="container px-4 px-lg-5">
+        <div class="small text-center text-muted">
+          Copyright &copy; 2023 - Team Signify
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+    <script src="/static/js/scripts.js"></script>
+    <script>
+      function editpage() {
+        window.location.href = "{{url_for('ProfileEdit')}}";
+      }
+
+      function logout() {
+        window.location.href = "{{url_for('LandingPage')}}";
+      }
+
+      function addTodo() {
+        const todoInput = document.getElementById("todoInput");
+        const todoDateTime = document.getElementById("todoDateTime");
+        const todoTimeFrame = document.getElementById("todoTimeFrame");
+        const todoList = document.getElementById("todoList");
+
+        if (todoInput.value.trim() !== "") {
+          const newTodoItem = document.createElement("div");
+          newTodoItem.classList.add("todo-item");
+
+          const todoText = document.createElement("p");
+          todoText.innerText = todoInput.value;
+          newTodoItem.appendChild(todoText);
+
+          const formattedDateTime = new Date(
+            todoDateTime.value
+          ).toLocaleString();
+          const todoDateTimeText = document.createElement("p");
+          todoDateTimeText.innerText = "Added on: " + formattedDateTime;
+          newTodoItem.appendChild(todoDateTimeText);
+
+          const todoTimeFrameText = document.createElement("p");
+          todoTimeFrameText.innerText =
+            "Time frame: " + todoTimeFrame.value + " hours";
+          newTodoItem.appendChild(todoTimeFrameText);
+
+          const deleteButton = document.createElement("button");
+          deleteButton.classList.add("btn", "btn-danger");
+          deleteButton.innerText = "Delete";
+          deleteButton.addEventListener("click", function () {
+            todoList.removeChild(newTodoItem);
+          });
+          newTodoItem.appendChild(deleteButton);
+
+          todoList.appendChild(newTodoItem);
+
+          todoInput.value = "";
+          todoDateTime.value = "";
+          todoTimeFrame.value = "";
+        }
+      }
+
+      const todoForm = document.getElementById("todoForm");
+      todoForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        addTodo();
+      });
+
+      function redirectToLearnPage() {
+        window.location.href = "";
+      }
+
+      function sendText(buttonId) {
+        var textToSend = buttonId;
+        fetch("/home", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: textToSend,
+        });
+        window.location.href = "{{url_for('Courses')}}";
+      }
+    </script>
+  </body>
+</html>
